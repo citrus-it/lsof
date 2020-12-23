@@ -251,6 +251,7 @@ Usage: Configure <options> <target-dialect>
     osrgcc|scogcc           : SCO OpenServer < 6.0.0, gcc compiler
     osr6                    : SCO OpenServer 6.0.0, SCO compiler
     solaris|solariscc       : Solaris gcc (solaris) or cc (solariscc)
+    illumos                 : illumos gcc
     tru64		    : Tru64 UNIX
     unixware|uw             : SCO|Caldera UnixWare
 LSOF_HLP
@@ -5431,6 +5432,47 @@ return(0); }
       LSOF_CFGF="$LSOF_CFGF -DHASXNAMNODE"
     fi	# }
     LSOF_DIALECT_DIR=uw
+    ;;
+
+# Configure for illumos
+
+  illumos)
+    if test "X$LSOF_RANLIB_SUP" = "X"	# {
+    then
+      LSOF_RANLIB=""
+    fi	# }
+    if test "X$LSOF_CC" = "X"	# {
+    then
+      LSOF_CC=gcc
+      LSOF_CCV=`$LSOF_CC -v 2>&1 | sed -n 's/.*version \(.*\)/\1/p'`
+    fi	# }
+    LSOF_TGT="illumos"
+    if test "X$LSOF_VSTR" = "X"	# {
+    then
+      LSOF_VSTR=`uname -r`
+    fi	# }
+    if test "X$LSOF_VERS" = "X"	# {
+    then
+      LSOF_TSTBIGF=" "
+      LSOF_TSTLFLG="-lsocket -lnsl"
+      LSOF_VERS="110000"
+    fi	# }
+    LSOF_UNSUP=""
+    LSOF_CFGF="$LSOF_CFGF -DHASZONES"
+    LSOF_CFGF="$LSOF_CFGF -DHAS_ZFS"
+    LSOF_CTFL=1
+
+    # Set libraries and dialect subdirectory.
+
+    LSOF_CFGL="$LSOF_CFGL -lelf -lsocket -lnsl"
+    LSOF_DIALECT_DIR=illumos
+
+    # Set local-specific stuff.
+
+    if test "X$LSOF_LOCALSUFFIX" = "XLOCAL"	# {
+    then
+      LSOF_DOC="\${DESTDIR}/usr/share/man"
+    fi	# }
     ;;
 
 # Handle unknown abbreviation.
